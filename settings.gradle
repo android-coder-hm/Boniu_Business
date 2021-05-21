@@ -1,0 +1,3 @@
+rootProject.name = "BoniuBusiness"
+include ':app'
+include ':boniu_base'
