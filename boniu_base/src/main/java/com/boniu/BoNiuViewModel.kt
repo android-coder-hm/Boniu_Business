@@ -30,6 +30,21 @@ class BoNiuViewModel : BaseViewModel() {
     // 发送反馈
     val sendFeedbackLiveData = MutableLiveData<Boolean>()
 
+    // 版本升级信息
+    val appUpdateInfoLiveData = MutableLiveData<AppUpdateInfoResBean>()
+
+    // 支付方式
+    val payChannelListLiveData = MutableLiveData<List<PayChannelResBean>>()
+
+    // 支付产品信息
+    val payProductInfoLiveData = MutableLiveData<List<ProductInfo>>()
+
+    // 支付信息
+    val payInfoLiveData = MutableLiveData<Map<String, Any>>()
+
+    // 支付结果查询
+    val payResultLiveData = MutableLiveData<Boolean>()
+
 
     /**
      * 检测是否需要显示开屏广告
@@ -93,8 +108,8 @@ class BoNiuViewModel : BaseViewModel() {
      */
     fun checkAppUpdate() {
         wrapExecute({
-            val appUpdateInfoResBean = getAppUpdateInfo()
-        })
+            appUpdateInfoLiveData.postValue(getAppUpdateInfo())
+        }, showLoading = false)
     }
 
     /**
@@ -110,6 +125,19 @@ class BoNiuViewModel : BaseViewModel() {
     }
 
     /**
+     * 更新用户头像
+     */
+    fun updateUserHead(filePath: String, folderType: String, appName: String) {
+        wrapExecute({
+            val headUrl = uploadHeadImage(filePath, folderType, appName)
+            updateUserInfo(UpdateUserInfoReqBean(headUrl, getLoginAccountInfo().nickname))
+            val result = getAccountInfo(UserAccountInfoReqBean())
+            saveLoginAccountInfo(result)
+            updateUserInfoLiveData.value = true
+        })
+    }
+
+    /**
      * 发送反馈
      */
     fun feedback(content: String, type: String) {
@@ -119,4 +147,48 @@ class BoNiuViewModel : BaseViewModel() {
         })
     }
 
+
+    /**
+     * 获取支付方式
+     */
+    fun getPayChannel() {
+        wrapExecute({
+            payChannelListLiveData.postValue(getPayChannelList())
+        })
+    }
+
+    /**
+     * 获取产信息
+     */
+    fun getProductInfo() {
+        payProductInfoLiveData.postValue(getPayProductInfo())
+    }
+
+    /**
+     * 支付
+     */
+    fun pay(payType: String, productId: String) {
+        wrapExecute({
+            // 创建订单
+            val orderId = createOrder(productId)
+            // 订单支付信息
+            val payInfo = getOrderPayInfo(orderId, payType)
+            val payInfoMap = HashMap<String, Any>()
+            payInfoMap["orderId"] = orderId
+            payInfoMap["payInfo"] = payInfo
+            payInfoLiveData.postValue(payInfoMap)
+        })
+    }
+
+    /**
+     * 查询支付结果
+     */
+    fun getPayResult(orderId: String) {
+        wrapExecute({
+            queryPayResult(orderId)
+            val result = getAccountInfo(UserAccountInfoReqBean())
+            saveLoginAccountInfo(result)
+            payResultLiveData.postValue(true)
+        })
+    }
 }

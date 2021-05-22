@@ -60,6 +60,10 @@ data class WechatPayOrder(
     val payInfo: String
 )
 
+// 支付信息
+abstract class PayInfoVo
+
+
 //微信支付Vo
 data class WechatPayInfo(
     val packageValue: String,
@@ -70,7 +74,10 @@ data class WechatPayInfo(
     val prepayid: String,
     val noncestr: String,
     val timestamp: String
-)
+): PayInfoVo()
+
+//支付宝支付Vo
+data class AlipayVo(val data: String): PayInfoVo()
 
 /**
  * app更新信息
