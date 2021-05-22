@@ -161,7 +161,9 @@ class BoNiuViewModel : BaseViewModel() {
      * 获取产信息
      */
     fun getProductInfo() {
-        payProductInfoLiveData.postValue(getPayProductInfo())
+        wrapExecute({
+            payProductInfoLiveData.postValue(getPayProductInfo())
+        })
     }
 
     /**
