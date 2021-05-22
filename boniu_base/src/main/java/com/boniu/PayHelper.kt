@@ -9,6 +9,8 @@ import com.boniu.http.WechatPayInfo
 import com.boniu.observer.PayResultSubject
 import com.tencent.mm.opensdk.modelpay.PayReq
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 /**
  * 支付帮助类
@@ -16,18 +18,30 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory
 object PayHelper {
     private const val TAG = "PayHelper"
     var wechat_pay_app_id = ""
-
+    private val executor: Executor by lazy {
+        Executors.newSingleThreadExecutor()
+    }
 
     fun aliPay(result: String, activity: AppCompatActivity) {
-        val aliPayResult = PayTask(activity).payV2(result, true)
-        logInfo(TAG, "支付宝支付结果：${aliPayResult}")
-        when {
-            aliPayResult["resultStatus"] == "9000" -> {
-                PayResultSubject.notifyObserver()
-            }
-            "6001" == aliPayResult["resultStatus"] -> showToast("支付取消")
-            else -> {
-                showToast("支付失败")
+        executor.execute {
+            val aliPayResult = PayTask(activity).payV2(result, true)
+            logInfo(TAG, "支付宝支付结果：${aliPayResult}")
+            when {
+                aliPayResult["resultStatus"] == "9000" -> {
+                    activity.runOnUiThread {
+                        PayResultSubject.notifyObserver()
+                    }
+                }
+                "6001" == aliPayResult["resultStatus"] -> {
+                    activity.runOnUiThread {
+                        showToast("支付取消")
+                    }
+                }
+                else -> {
+                    activity.runOnUiThread {
+                        showToast("支付失败")
+                    }
+                }
             }
         }
     }
