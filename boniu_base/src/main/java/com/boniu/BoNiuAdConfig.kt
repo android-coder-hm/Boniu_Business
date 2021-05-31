@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.adk.getShareValue
+import com.adk.logInfo
 import com.adk.putShareValue
 import com.bytedance.sdk.openadsdk.*
 import com.qq.e.ads.rewardvideo.RewardVideoAD
@@ -18,6 +19,7 @@ import com.qq.e.comm.util.AdError
  * 博牛广告配置
  */
 object BoNiuAdConfig {
+    private const val TAG = "BoNiuAdConfig"
 
     // 广告配置存储
     private const val SHARE_AD_FILE = "adShareFile"
@@ -216,11 +218,13 @@ object BoNiuAdConfig {
      * 显示穿山甲激励视频
      */
     private fun showTTUrgeAd(activity: AppCompatActivity, finishFun: () -> Unit, errorFun: () -> Unit, loadingFun: () -> Unit, dismissLoadingFun: () -> Unit, isFromError: Boolean = false) {
+        logInfo(TAG, "加载穿山甲激励视频")
         val ttAdNative = TTAdSdk.getAdManager().createAdNative(activity)
         val adSlot = AdSlot.Builder().setCodeId(ttAdUrgeCodeId).setSupportDeepLink(true).setOrientation(2).build()
         loadingFun()
         ttAdNative.loadRewardVideoAd(adSlot, object : TTAdNative.RewardVideoAdListener {
             override fun onError(p0: Int, p1: String?) {
+                logInfo(TAG, "加载穿山甲激励视频出错:$p0  $p1")
                 if (!isFromError) {
                     showGDTUrgeAd(activity, finishFun, errorFun, loadingFun, dismissLoadingFun, true)
                 } else {
@@ -247,6 +251,7 @@ object BoNiuAdConfig {
                         override fun onVideoComplete() {}
 
                         override fun onVideoError() {
+                            logInfo(TAG, "加载穿山甲激励视频出错 onVideoError")
                             if (!isFromError) {
                                 showGDTUrgeAd(activity, finishFun, errorFun, loadingFun, dismissLoadingFun, true)
                             } else {
@@ -272,6 +277,7 @@ object BoNiuAdConfig {
      * 优量汇激励视频
      */
     private fun showGDTUrgeAd(activity: AppCompatActivity, finishFun: () -> Unit, errorFun: () -> Unit, loadingFun: () -> Unit, dismissLoadingFun: () -> Unit, isFromError: Boolean = false) {
+        logInfo(TAG, "加载优量汇激励视频")
         var rewardVideoAD: RewardVideoAD? = null
         rewardVideoAD = RewardVideoAD(activity, gdtAdUrgeCodeId, object : RewardVideoADListener {
 
@@ -299,6 +305,7 @@ object BoNiuAdConfig {
             }
 
             override fun onError(p0: AdError?) {
+                logInfo(TAG, "加载优量汇激励视频出错：${p0?.errorMsg}")
                 if (!isFromError) {
                     showTTUrgeAd(activity, finishFun, errorFun, loadingFun, dismissLoadingFun, true)
                 } else {
