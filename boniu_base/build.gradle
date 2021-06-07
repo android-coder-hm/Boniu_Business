@@ -35,12 +35,9 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.3.2'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
-    api 'com.github.android-coder-hm:devlib:1.0.0'
+    implementation 'com.github.android-coder-hm:devlib:1.0.1'
     //json解析
     implementation 'com.google.code.gson:gson:2.8.6'
     //泛型生成库
     implementation 'com.github.ikidou:TypeBuilder:1.0'
-
-    //微信支付
-    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.7.0'
 }
