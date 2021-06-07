@@ -30,11 +30,6 @@ android {
         jvmTarget = '1.8'
     }
 
-    repositories {
-        flatDir {
-            dirs project(':boniu_base').file('libs'), 'libs'// 直接用模块的相对路径，这样是绝对准确的
-        }
-    }
 }
 
 dependencies {

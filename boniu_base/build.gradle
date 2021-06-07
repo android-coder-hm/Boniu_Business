@@ -28,12 +28,6 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-
-    repositories {
-        flatDir {
-            dirs 'libs'
-        }
-    }
 }
 
 dependencies {
@@ -47,12 +41,6 @@ dependencies {
     //泛型生成库
     implementation 'com.github.ikidou:TypeBuilder:1.0'
 
-    // 广告
-    implementation(name: 'GDTSDK.unionNormal.4.310.1180', ext: 'aar')
-    implementation(name: 'open_ad_sdk', ext: 'aar')
-
-    //支付宝支付
-    implementation(name: 'alipaySdk-15.7.4-20200228192259', ext: 'aar')
     //微信支付
     api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:6.7.0'
 }
