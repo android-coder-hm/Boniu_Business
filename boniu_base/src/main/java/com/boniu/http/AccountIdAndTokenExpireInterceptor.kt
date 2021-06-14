@@ -1,10 +1,7 @@
 package com.boniu.http
 
 
-import com.boniu.clearLoginStatus
-import com.boniu.getAccountId
-import com.boniu.getLoginAccountId
-import com.boniu.saveLoginAccountId
+import com.boniu.*
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
@@ -25,6 +22,9 @@ class AccountIdAndTokenExpireInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val response = chain.proceed(request)
+        if (!request.url.toString().startsWith(BoNiuConfig.getBaseUrl())) {
+            return response
+        }
         val builder = response.newBuilder()
         val clone = builder.build()
         val body = clone.body
